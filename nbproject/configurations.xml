@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="97">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="libraries">
+        <df name="apc">
+          <in>apc.c</in>
+        </df>
+        <df name="hungarian">
+          <in>hungarian.c</in>
+        </df>
+        <in>cost_matrix.c</in>
+        <in>dinamicList.c</in>
+        <in>nspLib.c</in>
+        <in>operators.c</in>
+        <in>strings.c</in>
+      </df>
+      <in>main1.c</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Arquivos Importantes"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>GNU|GNU</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0"
+                 commonFlags="-mtune=generic -march=x86-64 -fstack-protector-strong"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>main8</executablePath>
+          <ccTool flags="-std=c++14">
+          </ccTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+          <preBuildCommand></preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <folder path="0/libraries">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="libraries/apc/apc.c" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="libraries/cost_matrix.c" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="libraries/dinamicList.c" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="libraries/hungarian/hungarian.c" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="libraries/nspLib.c" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="libraries/operators.c" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="libraries/strings.c" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="main1.c" ex="false" tool="1" flavor2="9">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>libraries</pElem>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
