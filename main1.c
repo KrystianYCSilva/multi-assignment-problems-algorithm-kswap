@@ -32,7 +32,7 @@ bool useHungarianSolution = false;
 const char* diretorioBiblioteca = "./files/N25";
 const char* pastaBiblioteca = "files/N25/";
 const char* pastaConstranits = "files/casos-1-8/";
-const int arqConstraint = 7;
+const int arqConstraint = 1;
 
 //Constante Para indexar o salvar
 const char* funcaoExecutada = "Constraint_";
@@ -240,7 +240,7 @@ int main() {
                 strcat(saveAt, "_");
                 strcat(saveAt, dir->d_name);
 
-                cost_solution(solucaoMelhoramento, constraintsGlobal, nsp)
+                cost_solution(solucaoMelhoramento, constraintsGlobal, nsp);
                 saveDatas(saveAt_result, saveAt, name1, it, solucaoMelhoramento, primeraSolucao->cost_solution, executed);
 
 
