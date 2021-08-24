@@ -32,9 +32,11 @@ bool useHungarianSolution = false;
 const char* diretorioBiblioteca = "./files/N25";
 const char* pastaBiblioteca = "files/N25/";
 const char* pastaConstranits = "files/casos-1-8/";
+const int arqConstraint = 7;
 
 //Constante Para indexar o salvar
 const char* funcaoExecutada = "Constraint_";
+const char* diretorioSave = "resultados/N25/";
 
 Constraints* constraintsGlobal;
 
@@ -56,8 +58,7 @@ Schedule* multi_assignment_procedures(Schedule* initial_s, NspLib* nsp) {
         s_line = pcr_backward(s_line, nsp, constraintsGlobal);
         s_line = kSwap_backward(s_line, nsp, constraintsGlobal, k);
 
-        while (k < 4){
-            k++;
+        for (k = 4; k > 0; k--){
             s_line = kSwap(s_line, nsp, constraintsGlobal, k);
         }
 
@@ -92,7 +93,6 @@ Schedule* multi_assignment_procedures(Schedule* initial_s, NspLib* nsp) {
         if (current_s->cost_solution <= previous_s->cost_solution) {
             if (current_s->cost_solution <= best_s->cost_solution) {
                 free_schedule(best_s);
-                best_s = (Schedule*) calloc(1, sizeof (Schedule));
                 best_s = copy_solution(current_s);
                 printf("-- (else if current < best) Cost: %d (it: %d)\n", best_s->cost_solution, i);
             }
@@ -101,7 +101,6 @@ Schedule* multi_assignment_procedures(Schedule* initial_s, NspLib* nsp) {
             printf("-- (else) Cost: %d (it: %d)\n", best_s->cost_solution, i);
             if (previous_s->cost_solution <= best_s->cost_solution) {
                 free_schedule(best_s);
-                best_s = (Schedule*) calloc(1, sizeof (Schedule));
                 best_s = copy_solution(previous_s);
             }
         }
@@ -169,7 +168,7 @@ char* criarNomeArquivoResultado(char* fileName) {
 
     //Cria Nome do arquivo de resultados
     snprintf(buf2, 7, "_%d%d%d%d", tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min);
-    saveAt = strcat(saveAt, "resultados/resuts_");
+    saveAt = strcat(saveAt, diretorioSave);
     saveAt = strcat(saveAt, funcaoExecutada);
     saveAt = strcat(saveAt, fileName);
     saveAt = strcat(saveAt, "_");
@@ -193,19 +192,17 @@ Schedule* faseConstrutiva(NspLib* nsp) {
 
 int main() {
 
-    int i = 2;
-    while (i < 8) {
         //Leitura das Costraints
         char buf1[3];
         char* constraints = (char*) calloc(256, sizeof (char));
-        snprintf(buf1, 3, "%d", i + 1);
+        snprintf(buf1, 3, "%d", arqConstraint);
         constraints = strcat(constraints, buf1);
         constraints = strcat(constraints, ".gen");
         readAndSaveConstraints(constraints);
 
         char buf2[3];
         char* name1 = (char*) calloc(256, sizeof (char));
-        snprintf(buf2, 3, "_%d", i);
+        snprintf(buf2, 3, "_%d", arqConstraint);
         name1 = strcat(constraints, buf2);
         char* saveAt_result = criarNomeArquivoResultado(name1);
 
@@ -222,12 +219,12 @@ int main() {
                     dir = readdir(directory);
                     continue;
                 }
+                clock_t tic = clock();
                 NspLib* nsp = readAndSaveNsp(dir->d_name);
                 Schedule* primeraSolucao = faseConstrutiva(nsp);
 
-                clock_t tic = clock();
-                Schedule* solucaoMelhoramento = (Schedule*) calloc(1, sizeof (Schedule));
-                solucaoMelhoramento = copy_solution(primeraSolucao);
+
+                Schedule* solucaoMelhoramento = copy_solution(primeraSolucao);
 
                 solucaoMelhoramento = multi_assignment_procedures(solucaoMelhoramento, nsp);
                 clock_t toc = clock();
@@ -248,10 +245,10 @@ int main() {
                 free(saveAt);
                 freeNsp(nsp);
                 free_schedule(solucaoMelhoramento);
+                free_schedule(primeraSolucao);
                 dir = readdir(directory);
             }
         }
 
         freeConstraints(constraintsGlobal);
-    }
 }
