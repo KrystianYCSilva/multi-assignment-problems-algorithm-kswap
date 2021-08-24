@@ -53,15 +53,14 @@ Schedule* multi_assignment_procedures(Schedule* initial_s, NspLib* nsp) {
     while (i != it) {
         Schedule* s_line = copy_solution(current_s);
         Schedule* pause_sol = copy_solution(current_s);
-        s_line = kSwap(s_line, nsp, constraintsGlobal, 4);
-        s_line = kSwap(s_line, nsp, constraintsGlobal, 3);
-        s_line = kSwap(s_line, nsp, constraintsGlobal, 2);
-
         s_line = kSwap(s_line, nsp, constraintsGlobal, k);
         s_line = prt(s_line, nsp, constraintsGlobal);
         s_line = pcr_backward(s_line, nsp, constraintsGlobal);
         s_line = kSwap_backward(s_line, nsp, constraintsGlobal, k);
 
+        s_line = kSwap(s_line, nsp, constraintsGlobal, 4);
+        s_line = kSwap(s_line, nsp, constraintsGlobal, 3);
+        s_line = kSwap(s_line, nsp, constraintsGlobal, 2);
 
         s_line->cost_solution = cost_solution(s_line, constraintsGlobal, nsp);
         if (current_s->cost_solution == s_line->cost_solution) {
