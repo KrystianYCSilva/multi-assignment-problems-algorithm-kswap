@@ -53,14 +53,15 @@ Schedule* multi_assignment_procedures(Schedule* initial_s, NspLib* nsp) {
     while (i != it) {
         Schedule* s_line = copy_solution(current_s);
         Schedule* pause_sol = copy_solution(current_s);
+        s_line = kSwap(s_line, nsp, constraintsGlobal, 4);
+        s_line = kSwap(s_line, nsp, constraintsGlobal, 3);
+        s_line = kSwap(s_line, nsp, constraintsGlobal, 2);
+
         s_line = kSwap(s_line, nsp, constraintsGlobal, k);
         s_line = prt(s_line, nsp, constraintsGlobal);
         s_line = pcr_backward(s_line, nsp, constraintsGlobal);
         s_line = kSwap_backward(s_line, nsp, constraintsGlobal, k);
 
-        for (k = 4; k > 0; k--){
-            s_line = kSwap(s_line, nsp, constraintsGlobal, k);
-        }
 
         s_line->cost_solution = cost_solution(s_line, constraintsGlobal, nsp);
         if (current_s->cost_solution == s_line->cost_solution) {
@@ -239,6 +240,7 @@ int main() {
                 strcat(saveAt, "_");
                 strcat(saveAt, dir->d_name);
 
+                cost_solution(solucaoMelhoramento, constraintsGlobal, nsp)
                 saveDatas(saveAt_result, saveAt, name1, it, solucaoMelhoramento, primeraSolucao->cost_solution, executed);
 
 
