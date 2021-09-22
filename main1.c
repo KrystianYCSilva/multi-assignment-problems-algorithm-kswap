@@ -19,42 +19,47 @@
 
 int it = 3; // Iterações acima de 10 somente são significativas para instancias realistas, as demais convergem em torno da 5 iteração
 
+//Tem comentario no codigo na linha 58 e 68 pra executar ok ? qualquer duvida fala
+
 // Parametros NSPLib
 int n_nurses = 25;
 int n_days = 7;
 int n_shifts = 4;
+int max_files = 7290; //para 25-50-75-100
+//int max files = 690; //para 30-60
 
 // Algoritmos 
 bool useApcMultSolution = true;
 bool useHungarianSolution = false;
 
 // Parametros Documentos
-const char* diretorioBiblioteca = "./files/N25";
-const char* pastaBiblioteca = "files/N25/";
-const char* pastaConstranits = "files/casos-1-8/";
+const char *diretorioBiblioteca = "./files/N25";
+const char *pastaBiblioteca = "files/N25/";
+const char *pastaConstranits = "files/casos-1-8/";
 const int arqConstraint = 1;
 
 //Constante Para indexar o salvar
-const char* funcaoExecutada = "Constraint_";
-const char* diretorioSave = "resultados/N25/";
+const char *funcaoExecutada = "Constraint_";
+const char *diretorioSave = "resultados/N25/";
 
-Constraints* constraintsGlobal;
+Constraints *constraintsGlobal;
 
-Schedule* multi_assignment_procedures(Schedule* initial_s, NspLib* nsp) {
+Schedule *multi_assignment_procedures(Schedule *initial_s, NspLib *nsp) {
     printf("Iterations: %d", it);
-    Schedule* previous_s = copy_solution(initial_s);
-    Schedule* best_s = copy_solution(initial_s);
+    Schedule *previous_s = copy_solution(initial_s);
+    Schedule *best_s = copy_solution(initial_s);
 
     int i = 0, k = 1, pause = 0;
     previous_s->cost_solution = cost_solution(previous_s, constraintsGlobal, nsp);
-    Schedule* current_s = copy_solution(previous_s);
+    Schedule *current_s = copy_solution(previous_s);
     printf("-- Entrou do While  --------------------------------- ");
-    Schedule* mim_sol = copy_solution(current_s);
+    Schedule *mim_sol = copy_solution(current_s);
     while (i != it) {
-        Schedule* s_line = copy_solution(current_s);
-        Schedule* pause_sol = copy_solution(current_s);
+        Schedule *s_line = copy_solution(current_s);
+        Schedule *pause_sol = copy_solution(current_s);
+
+        s_line = pcr(s_line, nsp, constraintsGlobal);
         s_line = kSwap(s_line, nsp, constraintsGlobal, k);
-        s_line = prt(s_line, nsp, constraintsGlobal);
         s_line = pcr_backward(s_line, nsp, constraintsGlobal);
         s_line = kSwap_backward(s_line, nsp, constraintsGlobal, k);
 
@@ -117,7 +122,7 @@ Schedule* multi_assignment_procedures(Schedule* initial_s, NspLib* nsp) {
     return initial_s;
 }
 
-void saveDatas(char* name, char* name1, char* constraint, int it, Schedule* s, int initial_cost, double t) {
+void saveDatas(char *name, char *name1, char *constraint, int it, Schedule *s, int initial_cost, double t) {
     FILE *fp;
 
     fp = fopen(name, "a+");
@@ -125,17 +130,18 @@ void saveDatas(char* name, char* name1, char* constraint, int it, Schedule* s, i
     if (fp == NULL)
         printf("nao abriu\n");
 
-    fprintf(fp, "%s,%s;%d;%d;%d;%d;%d,%f\n", name1, constraint, it, initial_cost, s->cost_solution, s->h_violations, s->s_violations, t);
+    fprintf(fp, "%s,%s;%d;%d;%d;%d;%d,%f\n"
+            , name1, constraint, it, initial_cost, s->cost_solution, s->h_violations,s->s_violations, t);
     fclose(fp);
 }
 
-NspLib* readAndSaveNsp(char* dName) {
+NspLib *readAndSaveNsp(char *dName) {
     printf("Diretorio Aberto:  %s", dName);
     //Le arquivo de exercicio
-    char* realPath = (char*) calloc(256, sizeof (char));
+    char *realPath = (char *) calloc(256, sizeof(char));
     realPath = strcat(realPath, pastaBiblioteca);
     strcat(realPath, dName);
-    NspLib* nsp = readNspFile(realPath);
+    NspLib *nsp = readNspFile(realPath);
 
     // Mostrar NSP lido
     showNsp(nsp);
@@ -144,9 +150,9 @@ NspLib* readAndSaveNsp(char* dName) {
     return nsp;
 }
 
-void readAndSaveConstraints(char* fileName) {
-    
-    char* realPath = (char*) calloc(256, sizeof (char));
+void readAndSaveConstraints(char *fileName) {
+
+    char *realPath = (char *) calloc(256, sizeof(char));
     realPath = strcat(realPath, pastaConstranits);
     realPath = strcat(realPath, fileName);
     //Leitura das Costraints
@@ -155,30 +161,19 @@ void readAndSaveConstraints(char* fileName) {
     showConstraints(constraintsGlobal);
 }
 
-struct tm getLocalTime() {
-    time_t mytime;
-    mytime = time(NULL);
-    return *localtime(&mytime);
-}
-
-char* criarNomeArquivoResultado(char* fileName) {
-    char buf2[7];
-    struct tm tm = getLocalTime();
-    char* saveAt = (char*) calloc(256, sizeof (char));
+char *criarNomeArquivoResultado(char *fileName) {
+    char *saveAt = (char *) calloc(256, sizeof(char));
 
     //Cria Nome do arquivo de resultados
-    snprintf(buf2, 7, "_%d%d%d%d", tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min);
     saveAt = strcat(saveAt, diretorioSave);
     saveAt = strcat(saveAt, funcaoExecutada);
     saveAt = strcat(saveAt, fileName);
-    saveAt = strcat(saveAt, "_");
-    strcat(saveAt, buf2);
     strcat(saveAt, ".cvs");
     return saveAt;
 }
 
-Schedule* faseConstrutiva(NspLib* nsp) {
-    Schedule* primeiraSolucao = (Schedule*) calloc(1, sizeof (Schedule));
+Schedule *faseConstrutiva(NspLib *nsp) {
+    Schedule *primeiraSolucao = (Schedule *) calloc(1, sizeof(Schedule));
     if (useHungarianSolution) {
         primeiraSolucao = buildFirstCostMatrix(nsp, constraintsGlobal);
         primeiraSolucao->cost_solution = cost_solution(primeiraSolucao, constraintsGlobal, nsp);
@@ -188,68 +183,56 @@ Schedule* faseConstrutiva(NspLib* nsp) {
         primeiraSolucao->cost_solution = cost_solution(primeiraSolucao, constraintsGlobal, nsp);
     }
     return primeiraSolucao;
-};
+}
 
 int main() {
 
-        //Leitura das Costraints
-        char buf1[3];
-        char* constraints = (char*) calloc(256, sizeof (char));
-        snprintf(buf1, 3, "%d", arqConstraint);
-        constraints = strcat(constraints, buf1);
-        constraints = strcat(constraints, ".gen");
-        readAndSaveConstraints(constraints);
+    //Leitura das Costraints
+    char buf1[3];
+    char *constraints = (char *) calloc(256, sizeof(char));
+    snprintf(buf1, 3, "%d", arqConstraint);
+    constraints = strcat(constraints, buf1);
+    constraints = strcat(constraints, ".gen");
+    readAndSaveConstraints(constraints);
+    char *saveAt_result = criarNomeArquivoResultado(constraints);
 
-        char buf2[3];
-        char* name1 = (char*) calloc(256, sizeof (char));
-        snprintf(buf2, 3, "_%d", arqConstraint);
-        name1 = strcat(constraints, buf2);
-        char* saveAt_result = criarNomeArquivoResultado(name1);
+    //Pega o primeiro exercicio e entra no loop para executar os exercicios do diretorio
+    for (int file = 1910; file <= max_files; file++) {
+        char buf3[10];
+        char buf2[10];
+        snprintf(buf3, 10,"/%d.nsp", file);
+        snprintf(buf2, 10,"%d.nsp", file);
+        char* path = (char*) calloc(256, sizeof (char));
+        path = strcat(path, buf3);
+        char* name_file = (char*) calloc(256, sizeof (char));
+        name_file = strcat(name_file, buf2);
 
-        //Pasta dos exercicios da NSPLib
-        DIR * directory;
-        struct dirent *dir;
-        directory = opendir(diretorioBiblioteca);
-
-        //Pega o primeiro exercicio e entra no loop para executar os exercicios do diretorio
-        if (directory) {
-            dir = readdir(directory);
-            while (dir != NULL) {
-                if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, "..")) {
-                    dir = readdir(directory);
-                    continue;
-                }
-                clock_t tic = clock();
-                NspLib* nsp = readAndSaveNsp(dir->d_name);
-                Schedule* primeraSolucao = faseConstrutiva(nsp);
+        clock_t tic = clock();
+        NspLib *nsp = readAndSaveNsp(path);
+        Schedule *primeraSolucao = faseConstrutiva(nsp);
 
 
-                Schedule* solucaoMelhoramento = copy_solution(primeraSolucao);
+        Schedule *solucaoMelhoramento = copy_solution(primeraSolucao);
 
-                solucaoMelhoramento = multi_assignment_procedures(solucaoMelhoramento, nsp);
-                clock_t toc = clock();
-
-
-                double executed = (double) (toc - tic) / CLOCKS_PER_SEC;
+        solucaoMelhoramento = multi_assignment_procedures(solucaoMelhoramento, nsp);
+        clock_t toc = clock();
 
 
-                char* saveAt = (char*) calloc(256, sizeof (char));
-                strcat(saveAt, "resultados/");
-                strcat(saveAt, funcaoExecutada);
-                strcat(saveAt, "_");
-                strcat(saveAt, dir->d_name);
-
-                cost_solution(solucaoMelhoramento, constraintsGlobal, nsp);
-                saveDatas(saveAt_result, saveAt, name1, it, solucaoMelhoramento, primeraSolucao->cost_solution, executed);
+        double executed = (double) (toc - tic) / CLOCKS_PER_SEC;
 
 
-                free(saveAt);
-                freeNsp(nsp);
-                free_schedule(solucaoMelhoramento);
-                free_schedule(primeraSolucao);
-                dir = readdir(directory);
-            }
-        }
+        char *saveAt = (char *) calloc(256, sizeof(char));
+        strcat(saveAt, name_file);
 
-        freeConstraints(constraintsGlobal);
+        solucaoMelhoramento->cost_solution = cost_solution(solucaoMelhoramento, constraintsGlobal, nsp);
+        saveDatas(saveAt_result, saveAt, constraints, it, solucaoMelhoramento, primeraSolucao->cost_solution, executed);
+
+
+        free(saveAt);
+        freeNsp(nsp);
+        free_schedule(solucaoMelhoramento);
+        free_schedule(primeraSolucao);
+    }
+
+    freeConstraints(constraintsGlobal);
 }
