@@ -22,7 +22,7 @@ int it = 3; // Iterações acima de 10 somente são significativas para instanci
 //Tem comentario no codigo na linha 58 e 68 pra executar ok ? qualquer duvida fala
 
 // Parametros NSPLib
-int n_nurses = 25;
+int n_nurses = 50;
 int n_days = 7;
 int n_shifts = 4;
 int max_files = 7290; //para 25-50-75-100
@@ -33,14 +33,14 @@ bool useApcMultSolution = true;
 bool useHungarianSolution = false;
 
 // Parametros Documentos
-const char *diretorioBiblioteca = "./files/N25";
-const char *pastaBiblioteca = "files/N25/";
+const char *diretorioBiblioteca = "./files/N50";
+const char *pastaBiblioteca = "files/N50/";
 const char *pastaConstranits = "files/casos-1-8/";
-const int arqConstraint = 1;
+const int arqConstraint = 6;
 
 //Constante Para indexar o salvar
 const char *funcaoExecutada = "Constraint_";
-const char *diretorioSave = "resultados/N25/";
+const char *diretorioSave = "resultados/N50/";
 
 Constraints *constraintsGlobal;
 
@@ -130,7 +130,7 @@ void saveDatas(char *name, char *name1, char *constraint, int it, Schedule *s, i
     if (fp == NULL)
         printf("nao abriu\n");
 
-    fprintf(fp, "%s,%s;%d;%d;%d;%d;%d,%f\n"
+    fprintf(fp, "%s;%s;%d;%d;%d;%d;%d;%f\n"
             , name1, constraint, it, initial_cost, s->cost_solution, s->h_violations,s->s_violations, t);
     fclose(fp);
 }
@@ -187,6 +187,9 @@ Schedule *faseConstrutiva(NspLib *nsp) {
 
 int main() {
 
+    int nFile = 0;
+    printf("Entre com o numero do arquivo de entrada: ");
+    scanf("%d", &nFile);
     //Leitura das Costraints
     char buf1[3];
     char *constraints = (char *) calloc(256, sizeof(char));
@@ -194,10 +197,10 @@ int main() {
     constraints = strcat(constraints, buf1);
     constraints = strcat(constraints, ".gen");
     readAndSaveConstraints(constraints);
-    char *saveAt_result = criarNomeArquivoResultado(constraints);
+    char *saveAt_result = criarNomeArquivoResultado(buf1);
 
     //Pega o primeiro exercicio e entra no loop para executar os exercicios do diretorio
-    for (int file = 1910; file <= max_files; file++) {
+    for (int file = nFile; file <= max_files; file++) {
         char buf3[10];
         char buf2[10];
         snprintf(buf3, 10,"/%d.nsp", file);

@@ -43,6 +43,7 @@ int apc_init(apc_problem_t* p, int n, int** a, int z_p, int s) {
             p->colunm_assignment[i] = 0;
         }
     }
+    return 0;
 }
 
 void apc_free(apc_problem_t* p) {

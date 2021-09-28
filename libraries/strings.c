@@ -42,7 +42,8 @@ int strncopy(char* line, int from, int to) {
  */
 int spaces(char* line) {
     int s = 0;
-    for (int i = 0; i < strlen(line); i++) {
+    int value = strlen(line);
+    for (int i = 0; i < value; i++) {
         if (line[i] == TAB) {
             s++;
         }

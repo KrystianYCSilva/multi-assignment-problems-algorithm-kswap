@@ -66,7 +66,8 @@ void showConstraints(Constraints* constraintsLocalShowContraints) {
 
 void readLine(char* line, int* vector) {
     int j = 0, s = 0, x = 0;
-    for (int i = 0; i < strlen(line); i++)
+    int value = strlen(line);
+    for (int i = 0; i < value; i++)
         if (line[i] == TAB) {
             vector[x] = strncopy(line, j, i);
             x++;
