@@ -276,6 +276,10 @@ int main(int argc, char **argv) {
     Config cfg = default_config();
     parse_args(argc, argv, &cfg);
 
+    if (cfg.result_dir[0] == '\0' || strcmp(cfg.result_dir, "./resultados/N50") == 0) {
+        snprintf(cfg.result_dir, sizeof(cfg.result_dir), "./resultados/N%d", cfg.n_nurses);
+    }
+
     LapSolverFn solver = (cfg.solver == SOLVER_HUNGARIAN) ?
                           lap_solve_hungarian : lap_solve_apc;
 

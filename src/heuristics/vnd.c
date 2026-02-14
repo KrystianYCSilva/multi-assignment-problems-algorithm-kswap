@@ -12,6 +12,7 @@
 void vnd_init(VndConfig *cfg) {
     memset(cfg, 0, sizeof(VndConfig));
     cfg->count = 0;
+    cfg->max_restarts = VND_DEFAULT_MAX_RESTARTS;
     cfg->verbose = false;
 }
 
@@ -79,6 +80,7 @@ void vnd_solve(Schedule *s, const NspInstance *nsp, const Constraints *c,
                LapSolverFn solver, const VndConfig *cfg) {
     cost_evaluate_silent(s, c, nsp);
     int k = 0;
+    int restarts = 0;
 
     while (k < cfg->count) {
         int before = s->cost;
@@ -90,6 +92,12 @@ void vnd_solve(Schedule *s, const NspInstance *nsp, const Constraints *c,
             if (cfg->verbose)
                 printf("  VND: %s improved %d -> %d (restart)\n",
                        cfg->names[k], before, s->cost);
+            restarts++;
+            if (restarts >= cfg->max_restarts) {
+                if (cfg->verbose)
+                    printf("  VND: max restarts (%d) reached\n", cfg->max_restarts);
+                break;
+            }
             k = 0;
         } else {
             if (cfg->verbose)

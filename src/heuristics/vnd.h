@@ -4,11 +4,13 @@
 #include "../core/types.h"
 
 #define VND_MAX_NEIGHBOURHOODS 16
+#define VND_DEFAULT_MAX_RESTARTS 50
 
 typedef struct {
     NeighbourhoodFn neighbourhoods[VND_MAX_NEIGHBOURHOODS];
     const char *names[VND_MAX_NEIGHBOURHOODS];
     int count;
+    int max_restarts;
     bool verbose;
 } VndConfig;
 
